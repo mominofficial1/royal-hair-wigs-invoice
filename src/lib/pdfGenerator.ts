@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 
 export async function downloadInvoicePdf(elementId: string, invoiceNumber: number | string): Promise<void> {
   const element = document.getElementById(elementId);
@@ -21,26 +21,16 @@ export async function downloadInvoicePdf(elementId: string, invoiceNumber: numbe
     element.style.border = 'none';
 
     // Allow browser a render tick to apply style changes
-    await new Promise((resolve) => setTimeout(resolve, 60));
+    await new Promise((resolve) => setTimeout(resolve, 80));
 
-    // Create high-res canvas at 2x resolution (optimal for A4 PDF quality & performance)
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
+    // Convert element directly to PNG using browser's native renderer
+    // (Fully supports modern CSS colors like lab() and oklch() used by Tailwind v4)
+    const imgData = await toPng(element, {
+      quality: 1.0,
+      pixelRatio: 2,
       backgroundColor: '#ffffff',
-      onclone: (clonedDoc) => {
-        const clonedEl = clonedDoc.getElementById(elementId);
-        if (clonedEl) {
-          clonedEl.style.transform = 'none';
-          clonedEl.style.boxShadow = 'none';
-          clonedEl.style.border = 'none';
-        }
-      },
+      cacheBust: true,
     });
-
-    const imgData = canvas.toDataURL('image/png', 1.0);
 
     // Standard A4 dimensions in mm: 210 x 297
     const pdf = new jsPDF({
@@ -52,22 +42,22 @@ export async function downloadInvoicePdf(elementId: string, invoiceNumber: numbe
     const pdfWidth = 210;
     const pdfHeight = 297;
 
-    // Calculate image height proportional to pdfWidth
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const elWidth = element.offsetWidth || 794;
+    const elHeight = element.offsetHeight || 1123;
+    const imgHeight = (elHeight * pdfWidth) / elWidth;
 
     let heightLeft = imgHeight;
     let position = 0;
 
     // Render first page
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
     heightLeft -= pdfHeight;
 
     // Handle additional pages if content spans across multiple pages
     while (heightLeft > 5) {
       position -= pdfHeight;
       pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pdfHeight;
     }
 
