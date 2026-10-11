@@ -120,8 +120,18 @@ export default function HomePage() {
     setTimeout(() => setToast(null), 4000);
   };
 
-  // 1. Check Authentication on Mount
+  // 1. Check Authentication on Mount - Always require fresh login when visiting the link
   useEffect(() => {
+    const isSessionActive =
+      typeof window !== 'undefined' && sessionStorage.getItem('royal_portal_active') === 'true';
+
+    if (!isSessionActive) {
+      // Visiting live link must show login screen first
+      setUser(null);
+      setAuthChecked(true);
+      return;
+    }
+
     fetch('/api/auth/me')
       .then((res) => {
         if (res.ok) return res.json();
@@ -130,9 +140,13 @@ export default function HomePage() {
       .then((data) => {
         if (data.authenticated) {
           setUser(data.user);
+        } else {
+          if (typeof window !== 'undefined') sessionStorage.removeItem('royal_portal_active');
+          setUser(null);
         }
       })
       .catch(() => {
+        if (typeof window !== 'undefined') sessionStorage.removeItem('royal_portal_active');
         setUser(null);
       })
       .finally(() => {
@@ -298,6 +312,9 @@ export default function HomePage() {
 
   // Action: Logout
   const handleLogout = async () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('royal_portal_active');
+    }
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       setUser(null);
@@ -322,7 +339,16 @@ export default function HomePage() {
 
   // Not authenticated: render Login Page
   if (!user) {
-    return <LoginPage onLoginSuccess={(u) => setUser(u)} />;
+    return (
+      <LoginPage
+        onLoginSuccess={(u) => {
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('royal_portal_active', 'true');
+          }
+          setUser(u);
+        }}
+      />
+    );
   }
 
   return (

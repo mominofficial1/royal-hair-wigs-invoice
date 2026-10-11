@@ -46,19 +46,28 @@ export async function downloadInvoicePdf(elementId: string, invoiceNumber: numbe
     const elHeight = element.offsetHeight || 1123;
     const imgHeight = (elHeight * pdfWidth) / elWidth;
 
-    let heightLeft = imgHeight;
-    let position = 0;
+    // Check if this is a standard single-page invoice
+    // Standard A4 height is 297mm. If imgHeight <= 330mm, it's a 1-page invoice whose padding slightly exceeds 297mm.
+    if (imgHeight <= 330) {
+      // Fit cleanly onto exactly 1 page - NEVER add a blank second page
+      const singlePageHeight = Math.min(imgHeight, pdfHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, singlePageHeight, undefined, 'FAST');
+    } else {
+      // Genuinely multi-page invoice with many product rows
+      let heightLeft = imgHeight;
+      let position = 0;
 
-    // Render first page
-    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-    heightLeft -= pdfHeight;
-
-    // Handle additional pages if content spans across multiple pages
-    while (heightLeft > 5) {
-      position -= pdfHeight;
-      pdf.addPage();
+      // Page 1
       pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pdfHeight;
+
+      // Only add another page if there is substantial overflow content (> 35mm / ~1.4 inches)
+      while (heightLeft > 35) {
+        position -= pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= pdfHeight;
+      }
     }
 
     const safeNum = String(invoiceNumber).replace(/[^a-zA-Z0-9_-]/g, '');

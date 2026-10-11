@@ -25,7 +25,7 @@ export default function InvoicePreview({ invoice, scale = 1 }: InvoicePreviewPro
       {/* A4 Paper Container */}
       <div
         id="invoice-a4-document"
-        className="invoice-a4-page bg-white text-black relative shadow-xl border border-slate-300 w-full max-w-[794px] min-h-[1050px] p-8 sm:p-12 md:p-14 font-sans select-text flex flex-col justify-between"
+        className="invoice-a4-page bg-white text-black relative shadow-xl border border-slate-300 w-full max-w-[794px] min-h-[1020px] p-8 sm:p-10 md:p-11 font-sans select-text flex flex-col justify-between"
         style={{
           boxSizing: 'border-box',
           transform: scale !== 1 ? `scale(${scale})` : undefined,
