@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 
 interface LoginPageProps {
   onLoginSuccess: (user: { username: string }) => void;
 }
 
 export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
-  const [username, setUsername] = useState('astroinvoice');
-  const [password, setPassword] = useState('Orbit#42646');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -149,23 +149,6 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
                 </>
               )}
             </button>
-
-            {/* Shared Credentials Hint */}
-            <div className="pt-3 border-t border-slate-100">
-              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs text-slate-600 leading-relaxed">
-                <p className="font-semibold text-slate-800 mb-1 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  Preset Shared Credentials:
-                </p>
-                <div className="font-mono text-[11px] text-slate-700 bg-white p-2 rounded border border-slate-200 space-y-0.5">
-                  <div>Username: <strong className="text-slate-900">astroinvoice</strong></div>
-                  <div>Password: <strong className="text-slate-900">Orbit#42646</strong></div>
-                </div>
-                <p className="text-[10px] text-slate-400 mt-1.5">
-                  Configurable through server environment variables (<code className="text-slate-600">AUTH_USERNAME</code>, <code className="text-slate-600">AUTH_PASSWORD</code>).
-                </p>
-              </div>
-            </div>
           </form>
         </div>
 

@@ -19,7 +19,7 @@ export default function AppHeader({
   onOpenSavedModal,
   onOpenSettingsModal,
   onLogout,
-  username = 'astroinvoice',
+  username = 'royalinvoice',
 }: AppHeaderProps) {
   return (
     <header className="no-print bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-40 shadow-md">

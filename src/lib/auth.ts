@@ -51,8 +51,8 @@ export function clearRateLimit(ip: string): void {
 
 export function getExpectedCredentials() {
   return {
-    username: process.env.AUTH_USERNAME || 'astroinvoice',
-    password: process.env.AUTH_PASSWORD || 'Orbit#42646',
+    username: process.env.AUTH_USERNAME || 'royalinvoice',
+    password: process.env.AUTH_PASSWORD || 'Royal#Orbit@42647!',
   };
 }
 

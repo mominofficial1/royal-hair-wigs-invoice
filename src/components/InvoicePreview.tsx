@@ -39,6 +39,7 @@ export default function InvoicePreview({ invoice, scale = 1 }: InvoicePreviewPro
               src="/logo.png"
               alt="Watermark"
               fill
+              unoptimized
               className="object-contain"
               priority
             />
@@ -55,6 +56,7 @@ export default function InvoicePreview({ invoice, scale = 1 }: InvoicePreviewPro
                   src={invoice.companyLogoUrl || '/logo.png'}
                   alt={invoice.companyName || 'Royal Hair Wigs'}
                   fill
+                  unoptimized
                   className="object-contain object-left"
                   priority
                 />

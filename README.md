@@ -45,8 +45,8 @@
 
 | Field | Value |
 | :--- | :--- |
-| **Username** | `astroinvoice` |
-| **Password** | `Orbit#42646` |
+| **Username** | `royalinvoice` |
+| **Password** | `Royal#Orbit@42647!` |
 
 > **Note on Shared Access Model**: These credentials provide access to a shared business workspace. All authorized staff who know these credentials will manage the same invoice database. Keep the password secure and update it via environment variables when needed.
 
@@ -133,8 +133,8 @@ royal-hair-wigs-invoice/
 
 5. **Open Application**:
    Navigate to [http://localhost:3000](http://localhost:3000) and log in with:
-   - Username: `astroinvoice`
-   - Password: `Orbit#42646`
+   - Username: `royalinvoice`
+   - Password: `Royal#Orbit@42647!`
 
 ---
 
